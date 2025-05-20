@@ -1,7 +1,55 @@
-header {
-    color: brown;
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@400..700&family=Noto+Serif+JP:wght@200..900&family=Oxanium:wght@200..800&display=swap');
+
+
+:root {
+    --color-texto: #000000;
+    
+    --color-fondo: #EFE9DC;
+    --color-primario: #556B2F;
+    --color-secundario: #B22222;
+    --color-tinta: #5C5C5C;
+    --color-highlight: #4682B4;
+    
+    --fuente-principal: 'Bebas Neue', serif;
+    --fuente-secundaria: 'Noto Serif JP', serif;
+    --fuente-cuerpo: 'Oxanium', serif;
+    --fuente-descripcion: 'Caveat', serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fuente-secundaria);
+    color: var(--color-texto);
+    background-color: var(--color-fondo);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--fuente-principal);
+}
+
+header, footer {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    filter: brightness(0.95);
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    padding: 0.5em;
+    margin-top: 1em;
 }
 
 .titulo {
-    color: blueviolet;
+    font-family: var(--fuente-principal);
+    font-size: 2.5em;
+    color: var(--color-primario);
+    text-align: center;
+    margin: 0;
 }

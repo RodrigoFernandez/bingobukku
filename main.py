@@ -9,6 +9,8 @@ app, rt = fast_app(
 @rt('/')
 def get():
     login = Html(
+        Meta(charset='utf-8'),
+        Meta(name='viewport', content='width=device-width, initial-scale=1.0'),
         Link(rel='stylesheet', href='/styles/bingobukku.css', type='text/css'),
         Link(rel='stylesheet', href='/styles/login.css', type='text/css'),
         Link(rel='icon', href='/img/favicon.png', type='text/css'),
@@ -16,12 +18,15 @@ def get():
             Title('Bingo Bukku'),
             Body(
                 Container(
-                    Form(
-                        Input(id='usuario', type='text', placeholder='Usuario'),
-                        Input(id='pass', type='password', placeholder='Contraseña'),
-                        Button('Ingresar', id='ingresar'),
-                        action='/indice',
-                        method='POST'
+                    Div(H1('Bienvenido a Bingo Bukku'), cls='titulo'),
+                    Div(
+                        Form(
+                            Input(id='usuario', type='text', placeholder='Usuario'),
+                            Input(id='pass', type='password', placeholder='Contraseña'),
+                            Button('Ingresar', id='ingresar'),
+                            action='/indice',
+                            method='POST'
+                        )
                     )
                 )
             )
@@ -33,6 +38,8 @@ def get():
 @rt('/indice')
 def index():
     return Html(
+        Meta(charset='utf-8'),
+        Meta(name='viewport', content='width=device-width, initial-scale=1.0'),
         Link(rel='stylesheet', href='/styles/bingobukku.css', type='text/css'),
         Link(rel='stylesheet', href='/styles/indice.css', type='text/css'),
         Link(rel='icon', href='/img/favicon.png', type='text/css'),
@@ -42,11 +49,13 @@ def index():
                 Header('Usuario', cls='titulo'),
                 Container(
                     A('Agregar objetivo', href='/agregar-objetivo'),
-                    Li(
-                        A('Objetivo 1', href='/abrir-objetivo')
-                       ),
+                    Div(
+                        Li(
+                            A('Objetivo 1', href='/abrir-objetivo')
+                        ),
+                    cls='objetivos'),
                 ),
-                Footer('Copyright © 2025')
+                Footer(Span('Copyright © 2025'))
             )
         )
     )
@@ -54,6 +63,8 @@ def index():
 @rt('/agregar-objetivo')
 def agregar_objetivo():
     return Html(
+        Meta(charset='utf-8'),
+        Meta(name='viewport', content='width=device-width, initial-scale=1.0'),
         Link(rel='stylesheet', href='/styles/bingobukku.css', type='text/css'),
         Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'),
         Link(rel='icon', href='/img/favicon.png', type='text/css'),
@@ -74,6 +85,8 @@ def agregar_objetivo():
 @rt('/abrir-objetivo') 
 def abrir_objetivo():
     return Html(
+        Meta(charset='utf-8'),
+        Meta(name='viewport', content='width=device-width, initial-scale=1.0'),
         Link(rel='stylesheet', href='/styles/bingobukku.css', type='text/css'),
         Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'),
         Link(rel='icon', href='/img/favicon.png', type='text/css'),
@@ -108,6 +121,8 @@ def abrir_objetivo():
 @rt('/agregar-descripcion')
 def agregar_descripcion():
     return Html(
+        Meta(charset='utf-8'),
+        Meta(name='viewport', content='width=device-width, initial-scale=1.0'),
         Link(rel='stylesheet', href='/styles/bingobukku.css', type='text/css'),
         Link(rel='stylesheet', href='/styles/descripcion.css', type='text/css'),
         Link(rel='icon', href='/img/favicon.png', type='text/css'),
