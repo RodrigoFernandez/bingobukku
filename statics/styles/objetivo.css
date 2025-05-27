@@ -1,0 +1,44 @@
+.objetivo-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    text-align: center;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.container > a {
+    background-color: var(--color-tinta);
+    color: white;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin: 1em;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.container > .descripciones > li {
+    background-color: var(--color-tinta);
+    filter: opacity(0.5);
+    color: white;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+}
+
+.container > .descripciones > li > a {
+    color: white;
+    text-decoration: none;
+    font-family: var(--fuente-cuerpo);
+}
