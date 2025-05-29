@@ -42,3 +42,16 @@
     text-decoration: none;
     font-family: var(--fuente-cuerpo);
 }
+
+.container > .descripciones > li > a.borrar-descripcion {
+    color: var(--color-highlight);
+    font-weight: bold;
+    margin-left: 0.5em;
+    text-shadow: 0.1em 0.1em var(--color-texto);
+}
+
+.objetivo-imgs > img{
+    max-width: 12em;
+    height: auto;
+    margin: 0.5em;
+}

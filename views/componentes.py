@@ -1,4 +1,5 @@
 from fasthtml.common import *
+from services.objetivos import ObjetivosService
 
 def get_common_meta():
     return [Meta(charset='utf-8'),
@@ -48,16 +49,24 @@ def get_login():
 
     return login
 
+def get_item_objetivo(objetivo):
+    return Li(
+                A(objetivo.nombre, href='/abrir-objetivo')
+            )
+
 def get_indice():
     contenidos = get_common_meta()
     contenidos.append(Link(rel='stylesheet', href='/styles/indice.css', type='text/css'))
 
+    objetivosService = ObjetivosService()
+    objetivos = objetivosService.get_objetivos()
+
+    items = [get_item_objetivo(objetivo) for objetivo in objetivos]
+
     contenido_body_aux=[Container(
                     A('Agregar objetivo', href='/agregar-objetivo'),
                     Div(
-                        Li(
-                            A('Objetivo 1', href='/abrir-objetivo')
-                        ),
+                        tuple(items),
                     cls='objetivos'),
                 )]
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
@@ -82,34 +91,37 @@ def get_agregar_objetivo():
         tuple(contenidos)
     )
 
+def get_titulo_link_descripcion(descripcion):    
+    return " | ".join([descripcion.feria, descripcion.local, descripcion.moneda + descripcion.precio])
+
+def get_item_descripcion(descripcion):
+    return Li(
+                A(get_titulo_link_descripcion(descripcion), href='/mostrar-descripcion'),
+                A('X', cls='borrar-descripcion')
+            )
+    
 def get_abrir_objetivo():
     contenidos = get_common_meta()
     contenidos.append(Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'))
+
+    objetivosService = ObjetivosService()
+    objetivo = objetivosService.get_objetivos()[0]
+    print(objetivo)
+    items = [get_item_descripcion(descripcion) for descripcion in objetivo.descripciones]
+    ruta_imagen = objetivo.imagen
+
     contenido_body_aux = [Header(
                     Div(),
-                    Div('Objetivo 1'),
+                    Div(objetivo.nombre),
                     Div(A('Volver', href='/indice')),
                     cls='objetivo-header'
                     ),
                 Container(
                     Div(
-                        Img(src='/img/G.I.-Joe-Retro-Collection-Storm-Shadow-3.75-inch-Action-Figure-400x600.jpg', alt='Objetivo', cls='objetivo-img'),
-                        Img(src='/img/reloj_avion.jpeg', alt='Objetivo', cls='objetivo-img'),
-                        Img(src='/img/robot_reloj01.jpg', alt='Objetivo', cls='objetivo-img'),
+                        Img(src=ruta_imagen, alt='Objetivo', cls='objetivo-img'),
                         cls='objetivo-imgs'
                     ),
-                    Div(Li(
-                        A('Feria ciruja | holocron sublimacion | $10000', href='/mostrar-descripcion'),
-                        A('Borrar')
-                       ),
-                    Li(
-                        A('Retro start | RGB | $11000', href='/mostrar-descripcion'),
-                        A('Borrar')
-                       ),
-                    Li(
-                        A('FAA | Gameshop | $15000', href='/mostrar-descripcion'),
-                        A('Borrar')
-                       ),
+                    Div(tuple(items),
                        cls='descripciones'),
                     A('Agregar descripcion', href='/agregar-descripcion'),
                 )]
@@ -122,19 +134,32 @@ def get_abrir_objetivo():
 def get_agregar_descripcion():
     contenidos = get_common_meta()
     contenidos.append(Link(rel='stylesheet', href='/styles/descripcion.css', type='text/css'))
-    contenido_body_aux=[Form(
-                    Input(id='Feria', type='text', placeholder='Feria'),
-                    Input(id='Local', type='text', placeholder='Local'),
-                    Select(id='Moneda', placeholder='Moneda')(
-                        Option('$', value='pesos', selected=True),
-                        Option('u$d', value='dolares'),
+    contenido_body_aux=[
+                Section(
+                    Form(
+                        Input(id='Feria', type='text', placeholder='Feria'),
+                        Br(),
+                        Input(id='Local', type='text', placeholder='Local'),
+                        Br(),
+                        Div(
+                            Select(id='Moneda', placeholder='Moneda')(
+                                Option('$', value='pesos', selected=True),
+                                Option('u$d', value='dolares'),
+                            ),
+                            Input(id='Precio', type='number', placeholder='Precio'),
+                            cls='precio-select'
+                        ),
+                        Textarea(id='Comentario', placeholder='Comentario'),
+                        Br(),
+                        Div(
+                            Button('Agregar', id='agregar'),
+                            Button('Cancelar', id='cancelar', hx_get='/abrir-objetivo'),
+                            cls='botonera-descripcion'
+                        ),
+                        action='/abrir-objetivo',
+                        method='POST'
                     ),
-                    Input(id='Precio', type='number', placeholder='Precio'),
-                    Input(id='Comentario', type='text', placeholder='Comentario'),
-                    Button('Agregar', id='agregar'),
-                    Button('Cancelar', id='cancelar', hx_get='/abrir-objetivo'),
-                    action='/abrir-objetivo',
-                    method='POST'
+                    cls='descripcion-form'
                 )]
     
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
