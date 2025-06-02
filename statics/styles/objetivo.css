@@ -55,3 +55,19 @@
     height: auto;
     margin: 0.5em;
 }
+
+.objetivo-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.objetivo-form > form {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.objetivo-form > form > div {
+    text-align: center;
+}

@@ -16,12 +16,18 @@
 }
 
 .container > .objetivos {
-    background-color: var(--color-tinta);
-    filter: opacity(0.5);
     color: white;
     margin-left: 1em;
     margin-right: 1em;
     padding: 0.5em;
+}
+
+.container > .objetivos > li {
+    background-color: var(--color-tinta);
+    filter: opacity(0.5);
+    padding: 0.5em;
+    margin-bottom: 0.25em;
+    margin-top: 0.25em;
 }
 
 .container > .objetivos > li > a {

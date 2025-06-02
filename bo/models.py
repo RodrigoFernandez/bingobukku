@@ -3,10 +3,25 @@ class Objetivo(object):
     """
     Objetivo buscado.
     """
-    def __init__(self, nombre: str):
+    def __init__(self, id: int, nombre: str):
+        self.__id = id
         self._nombre = nombre
         self._descripciones = []
         self._imagen = None
+
+    @property
+    def id(self) -> int:
+        """
+        Devuelve el ID del objetivo.
+        """
+        return self.__id
+    
+    @id.setter
+    def id(self, id: int):
+        """
+        Establece el ID del objetivo.
+        """
+        self.__id = id
 
     @property
     def nombre(self) -> str:
@@ -54,18 +69,27 @@ class Objetivo(object):
         """
         Representación del objetivo.
         """
-        return f"Objetivo(nombre={self._nombre}, descripciones={len(self._descripciones)}, imagen={self._imagen})"
+        return f"Objetivo(id={self.__id}, nombre={self._nombre}, descripciones={len(self._descripciones)}, imagen={self._imagen})"
 
 class Descripcion(object):
     """
     Descripción de un objetivo.
     """
-    def __init__(self, feria: str, local: str, moneda: str, precio: str):
+    def __init__(self, id: int, feria: str, local: str, moneda: str, precio: str):
+        self.__id = id
         self._feria = feria
         self._local = local
         self._moneda = moneda
         self._precio = precio
 
+    @property
+    def id(self) -> int:
+        return self.__id
+    
+    @id.setter
+    def id(self, id: int):
+        self.__id = id
+    
     @property
     def feria(self) -> str:
         return self._feria
@@ -83,4 +107,4 @@ class Descripcion(object):
         return self._precio
     
     def __repr__(self):
-        return f"Descripcion(feria={self._feria}, local={self._local}, moneda={self._moneda}, precio={self._precio})"
+        return f"Descripcion(id={self.__id},feria={self._feria}, local={self._local}, moneda={self._moneda}, precio={self._precio})"
