@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from services.objetivos import ObjetivosService
-from bo.models import Objetivo, Descripcion
+from bo.models import Objetivo, Descripcion, Moneda
 
 objetivosService = ObjetivosService()
 
@@ -14,7 +14,7 @@ def get_common_head(titulo='Bingo Bukku', contenido_body=[]):
     contenido_body_final = []
     contenido_body_final.append(Header(titulo, cls='titulo'))
     contenido_body_final += contenido_body
-    contenido_body_final.append(Footer(Span('Copyright © 2025')))
+    contenido_body_final.append(Footer('Copyright © 2025', cls='pie'))
 
     return Head(
         Title(titulo),
@@ -67,9 +67,14 @@ def get_indice():
     items = [get_item_objetivo(objetivo) for objetivo in objetivos]
 
     contenido_body_aux=[Container(
-                    A('Agregar objetivo', href='/agregar-objetivo'),
                     Div(
+                        A('Agregar objetivo', href='/agregar-objetivo'),
+                        cls='agregar-objetivo-section'
+                    ),
+                    Div(
+                        Ul(
                         tuple(items),
+                        ),
                     cls='objetivos'),
                 )]
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
@@ -145,9 +150,15 @@ def get_abrir_objetivo(id: int):
                         Img(src=ruta_imagen, alt='Objetivo', cls='objetivo-img'),
                         cls='objetivo-imgs'
                     ),
-                    Div(tuple(items),
+                    Div(
+                        Ul(
+                            tuple(items)
+                        ),
                        cls='descripciones'),
-                    A('Agregar descripcion', href='/agregar-descripcion/' + str(objetivo.id), cls='agregar-descripcion'),
+                    Div(
+                        A('Agregar descripcion', href='/agregar-descripcion/' + str(objetivo.id), cls='agregar-descripcion'),
+                        cls='agregar-descripcion-section'
+                        ),
                 )]
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
 
@@ -162,14 +173,14 @@ def get_agregar_descripcion(objetivo_id: int):
                 Section(
                     Form(
                         Input(id='objetivo_id', type='text', placeholder='objetivo_id', value=objetivo_id, hidden=True),
-                        Input(id='feria', type='text', placeholder='Feria'),
-                        Br(),
                         Input(id='local', type='text', placeholder='Local'),
+                        Br(),
+                        Input(id='feria', type='text', placeholder='Feria'),
                         Br(),
                         Div(
                             Select(id='moneda', placeholder='Moneda')(
-                                Option('$', value='pesos', selected=True),
-                                Option('u$d', value='dolares'),
+                                Option(Moneda.PESOS.value, value=Moneda.PESOS.name, selected=True),
+                                Option(Moneda.DOLARES.value, value=Moneda.DOLARES.name),
                             ),
                             Input(id='precio', type='number', placeholder='Precio'),
                             cls='precio-select'
@@ -198,25 +209,27 @@ def add_nueva_descripcion(data: dict):
     """
     print(data)
     objetivo_id = int(data.get('objetivo_id', 0))
-    #feria = data.get('Feria', '').strip()
-    #local = data.get('Local', '').strip()
-    #moneda = data.get('Moneda', 'pesos')
-    #precio = data.get('Precio', '').strip()
+    feria = data.get('feria', '').strip()
+    local = data.get('local', '').strip()
+    moneda = data.get('moneda', Moneda.PESOS.name)
+    moneda = Moneda.get_value(moneda)
+    precio = data.get('precio', '').strip()
     
     #if not objetivo_id or not feria or not local or not precio:
     #    return get_agregar_descripcion()  # Retorna el formulario si faltan datos
 
-    #descripcion = Descripcion(
-    #    id=None,  # El ID se asignará automáticamente
-    #    feria=feria,
-    #    local=local,
-    #    moneda=moneda,
-    #    precio=precio
-    #)
+    descripcion = Descripcion(
+        id=None,  # El ID se asignará automáticamente
+        feria=feria,
+        local=local,
+        moneda=moneda,
+        precio=precio
+    )
     
-    #objetivo = objetivosService.get_objetivo(objetivo_id)
-    #if objetivo:
-    #    objetivo.descripciones.append(descripcion)
-    
+    objetivo = objetivosService.get_objetivo(objetivo_id)
+    if objetivo:
+        objetivo.descripciones.append(descripcion)
+        objetivosService.guardar_objetivo(objetivo)
+
     # Redirigir al objetivo después de agregar la descripción
     return get_abrir_objetivo(objetivo_id)

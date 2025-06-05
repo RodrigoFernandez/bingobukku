@@ -17,12 +17,17 @@
     --fuente-descripcion: 'Caveat', serif;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: var(--fuente-secundaria);
     color: var(--color-texto);
     background-color: var(--color-fondo);
+    height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -35,21 +40,32 @@ header, footer {
     filter: brightness(0.95);
 }
 
+/*
 footer {
-    position: fixed;
     bottom: 0;
     display: flex;
     flex-direction: column;
-    width: 100%;
     text-align: center;
     padding: 0.5em;
     margin-top: 1em;
+    position: fixed;
 }
-
+*/
 .titulo {
     font-family: var(--fuente-principal);
     font-size: 2.5em;
     color: var(--color-primario);
     text-align: center;
     margin: 0;
+}
+
+.pie {
+    text-align: center;
+    margin: 0;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.container {
+    height: 100%;
 }

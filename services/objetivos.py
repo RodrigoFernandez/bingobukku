@@ -49,4 +49,19 @@ class ObjetivosService(object):
         
         objetivo.id = len(self._objetivos) + 1  # Asigna un nuevo ID basado en la longitud actual
         self._objetivos.append(objetivo)
+
+    def guardar_objetivo(self, objetivo: Objetivo):
+        """
+        Guarda un objetivo existente o actualiza uno existente.
+        """
+        if not isinstance(objetivo, Objetivo):
+            raise ValueError("El objetivo debe ser una instancia de la clase Objetivo.")
+        
+        for i, obj in enumerate(self._objetivos):
+            if obj.id == objetivo.id:
+                self._objetivos[i] = objetivo
+                return
+        
+        # Si no se encontró el objetivo, lo agrega como nuevo
+        self.add_objetivo(objetivo)
     

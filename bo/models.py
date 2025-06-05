@@ -1,3 +1,19 @@
+from enum import Enum
+
+class Moneda(Enum):
+    """
+    Enum para las monedas.
+    """
+    PESOS = '$'
+    DOLARES = 'u$d'
+
+    @classmethod
+    def choices(cls):
+        return [(choice.value, choice.name) for choice in cls]
+    
+    @classmethod
+    def get_value(cls, name: str):
+        return cls[name].value if name in cls.__members__ else None
 
 class Objetivo(object):
     """
@@ -75,12 +91,13 @@ class Descripcion(object):
     """
     Descripción de un objetivo.
     """
-    def __init__(self, id: int, feria: str, local: str, moneda: str, precio: str):
+    def __init__(self, id: int, feria: str, local: str, moneda: str, precio: str, objetivo_id: int = None):
         self.__id = id
         self._feria = feria
         self._local = local
         self._moneda = moneda
         self._precio = precio
+        self._objetivo_id = objetivo_id
 
     @property
     def id(self) -> int:
@@ -94,17 +111,41 @@ class Descripcion(object):
     def feria(self) -> str:
         return self._feria
     
+    @feria.setter
+    def feria(self, feria: str):
+        self._feria = feria
+    
     @property
     def local(self) -> str:
         return self._local
+    
+    @local.setter
+    def local(self, local: str):
+        self._local = local
     
     @property
     def moneda(self) -> str:
         return self._moneda
     
+    @moneda.setter
+    def moneda(self, moneda: str):
+        self._moneda = moneda
+
     @property
     def precio(self) -> str:
         return self._precio
     
+    @precio.setter
+    def precio(self, precio: str):
+        self._precio = precio
+    
+    @property
+    def objetivo_id(self) -> str:
+        return self._objetivo_id
+    
+    @objetivo_id.setter
+    def objetivo_id(self, objetivo_id: int):
+        self._objetivo_id = objetivo_id
+    
     def __repr__(self):
-        return f"Descripcion(id={self.__id},feria={self._feria}, local={self._local}, moneda={self._moneda}, precio={self._precio})"
+        return f"Descripcion(id={self.__id},feria={self._feria}, local={self._local}, moneda={self._moneda}, precio={self._precio}, objetivo_id={self._objetivo_id})"
