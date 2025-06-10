@@ -1,4 +1,5 @@
 from enum import Enum
+from sqlmodel import SQLModel, create_engine, Session, Field, Relationship
 
 class Moneda(Enum):
     """
@@ -15,137 +16,59 @@ class Moneda(Enum):
     def get_value(cls, name: str):
         return cls[name].value if name in cls.__members__ else None
 
-class Objetivo(object):
+class Usuario(SQLModel, table=True):
+    """
+    Usuario del sistema.
+    """
+    id: int | None = Field(default=None, primary_key=True)
+    nombre: str = Field(default='', nullable=False)
+    mail: str = Field(default='', nullable=False)
+    password: str = Field(default='', nullable=False)
+    objetivos: list['Objetivo'] = Relationship(back_populates='usuario')
+    
+class Objetivo(SQLModel, table=True):
     """
     Objetivo buscado.
     """
-    def __init__(self, id: int, nombre: str):
-        self.__id = id
-        self._nombre = nombre
-        self._descripciones = []
-        self._imagen = None
+    id: int | None = Field(default=None, primary_key=True)
+    nombre: str = Field(default='', nullable=False)
+    descripciones: list['Descripcion'] = Relationship(back_populates='objetivo')
+    imagen: str | None = Field(nullable=True, default=None)
+    usuario_id: int = Field(foreign_key='usuario.id', nullable=False)
+    usuario: Usuario = Relationship(back_populates='objetivos')
 
-    @property
-    def id(self) -> int:
-        """
-        Devuelve el ID del objetivo.
-        """
-        return self.__id
-    
-    @id.setter
-    def id(self, id: int):
-        """
-        Establece el ID del objetivo.
-        """
-        self.__id = id
-
-    @property
-    def nombre(self) -> str:
-        """
-        Devuelve el nombre del objetivo.
-        """
-        return self._nombre
-    
-    @nombre.setter
-    def nombre(self, nombre: str):
-        """
-        Establece el nombre del objetivo.
-        """
-        self._nombre = nombre
-    
-    @property
-    def descripciones(self) -> list:
-        """
-        Devuelve las descripciones del objetivo.
-        """
-        return self._descripciones
-    
-    @descripciones.setter
-    def descripciones(self, descripciones: list):
-        """
-        Establece las descripciones del objetivo.
-        """
-        self._descripciones = descripciones
-    
-    @property
-    def imagen(self) -> str:
-        """
-        Devuelve la imagen del objetivo.
-        """
-        return self._imagen
-    
-    @imagen.setter
-    def imagen(self, imagen: str):
-        """
-        Establece la imagen del objetivo.
-        """
-        self._imagen = imagen
-    
-    def __repr__(self):
-        """
-        Representación del objetivo.
-        """
-        return f"Objetivo(id={self.__id}, nombre={self._nombre}, descripciones={len(self._descripciones)}, imagen={self._imagen})"
-
-class Descripcion(object):
+class Descripcion(SQLModel, table=True):
     """
     Descripción de un objetivo.
     """
-    def __init__(self, id: int, feria: str, local: str, moneda: str, precio: str, objetivo_id: int = None):
-        self.__id = id
-        self._feria = feria
-        self._local = local
-        self._moneda = moneda
-        self._precio = precio
-        self._objetivo_id = objetivo_id
+    id: int | None = Field(default=None, primary_key=True)
+    feria: str = Field(default='', nullable=False)
+    local: str = Field(default='', nullable=False)
+    moneda: str = Field(default='PESOS', nullable=False)
+    precio: float = Field(default=0.0, nullable=False)
+    objetivo_id: int = Field(foreign_key='objetivo.id', nullable=False)
+    objetivo: Objetivo = Relationship(back_populates='descripciones')
 
-    @property
-    def id(self) -> int:
-        return self.__id
-    
-    @id.setter
-    def id(self, id: int):
-        self.__id = id
-    
-    @property
-    def feria(self) -> str:
-        return self._feria
-    
-    @feria.setter
-    def feria(self, feria: str):
-        self._feria = feria
-    
-    @property
-    def local(self) -> str:
-        return self._local
-    
-    @local.setter
-    def local(self, local: str):
-        self._local = local
-    
-    @property
-    def moneda(self) -> str:
-        return self._moneda
-    
-    @moneda.setter
-    def moneda(self, moneda: str):
-        self._moneda = moneda
 
-    @property
-    def precio(self) -> str:
-        return self._precio
+class Database:
+    _instance = None
+
+    def __new__(cls, db_url: str):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.engine = create_engine(db_url)
+        return cls._instance
     
-    @precio.setter
-    def precio(self, precio: str):
-        self._precio = precio
+    def get_session(self):
+        return Session(self.engine)
     
-    @property
-    def objetivo_id(self) -> str:
-        return self._objetivo_id
+def crear_db(sqlite_url):
+    engine = create_engine(sqlite_url, echo=True)
+    SQLModel.metadata.create_all(engine)
+
+if __name__ == "__main__":
+    import toml
+    config = toml.load('bingobukku.toml')
     
-    @objetivo_id.setter
-    def objetivo_id(self, objetivo_id: int):
-        self._objetivo_id = objetivo_id
+    crear_db(config['database']['url'])
     
-    def __repr__(self):
-        return f"Descripcion(id={self.__id},feria={self._feria}, local={self._local}, moneda={self._moneda}, precio={self._precio}, objetivo_id={self._objetivo_id})"

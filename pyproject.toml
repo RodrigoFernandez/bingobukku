@@ -8,7 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "python-fasthtml (>=0.12.12,<0.13.0)"
+    "python-fasthtml (>=0.12.12,<0.13.0)",
+    "sqlmodel (>=0.0.24,<0.0.25)",
+    "toml (>=0.10.2,<0.11.0)"
 ]
 
 

@@ -1,5 +1,13 @@
 from fasthtml.common import *
 from views.componentes import get_login, get_indice, get_agregar_objetivo, get_abrir_objetivo, get_agregar_descripcion, add_nuevo_objetivo, add_nueva_descripcion
+import toml
+from bo.models import Database
+
+
+config = toml.load('bingobukku.toml')
+print(f"Configuración cargada: {config}")
+
+db = Database(config['database']['url'])
 
 app, rt = fast_app(
                 live=True,

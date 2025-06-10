@@ -1,8 +1,15 @@
 from fasthtml.common import *
 from services.objetivos import ObjetivosService
-from bo.models import Objetivo, Descripcion, Moneda
+from services.usuarios import UsuariosService
+from bo.models import Objetivo, Descripcion, Moneda, Usuario
+import toml
 
-objetivosService = ObjetivosService()
+config = toml.load('bingobukku.toml')
+print(f"Configuración cargada: {config}")
+
+objetivosService = ObjetivosService(config['database']['url'])
+usuariosService = UsuariosService(config['database']['url'])
+_usr = usuariosService.get_usuario(0)  # Obtener usuario por defecto si no se pasa uno
 
 def get_common_meta():
     return [Meta(charset='utf-8'),
@@ -57,11 +64,12 @@ def get_item_objetivo(objetivo):
                 A(objetivo.nombre, href='/abrir-objetivo/' + str(objetivo.id)),
             )
 
-def get_indice():
+def get_indice(usr: Usuario = None):
     contenidos = get_common_meta()
     contenidos.append(Link(rel='stylesheet', href='/styles/indice.css', type='text/css'))
 
-    
+    # en algun momento se deberia poder pasar un usuario
+    print(_usr)
     objetivos = objetivosService.get_objetivos()
 
     items = [get_item_objetivo(objetivo) for objetivo in objetivos]
@@ -84,6 +92,7 @@ def get_indice():
     )
 
 def get_agregar_objetivo():
+    print(_usr)
     contenidos = get_common_meta()
     contenidos.append(Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'))
     contenido_body_aux = [
@@ -112,13 +121,16 @@ def add_nuevo_objetivo(data: dict):
     """
     print(data)
     print(data.get('objetivo', '').strip())
+    print(_usr)
     nuevo_obj = Objetivo(
         id=None,  # El ID se asignará automáticamente
-        nombre=data.get('objetivo', '').strip())
+        nombre=data.get('objetivo', '').strip(),
+        usuario_id=_usr.id,
+        usuario=_usr)
     
-    objetivosService.add_objetivo(nuevo_obj)
+    objetivosService.save_or_update_objetivo(nuevo_obj)
     # Redirigir al índice después de agregar el objetivo
-    return get_indice()
+    return get_indice(_usr)
 
 def get_titulo_link_descripcion(descripcion):    
     return " | ".join([descripcion.feria, descripcion.local, descripcion.moneda + descripcion.precio])
