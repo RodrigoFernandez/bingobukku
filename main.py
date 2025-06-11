@@ -1,11 +1,10 @@
 from fasthtml.common import *
-from views.componentes import get_login, get_indice, get_agregar_objetivo, get_abrir_objetivo, get_agregar_descripcion, add_nuevo_objetivo, add_nueva_descripcion
+from views.componentes import get_login, get_indice, get_agregar_objetivo, get_abrir_objetivo, get_agregar_descripcion, add_nuevo_objetivo, add_nueva_descripcion, get_mostrar_descripcion
 import toml
 from bo.models import Database
 
 
 config = toml.load('bingobukku.toml')
-print(f"Configuración cargada: {config}")
 
 db = Database(config['database']['url'])
 
@@ -42,5 +41,9 @@ def agregar_descripcion(objetivo_id: int):
 @rt('/nueva-descripcion', methods=['POST'])
 def nueva_descripcion(data: dict):
     return add_nueva_descripcion(data)
+
+@rt('/mostrar-descripcion/{id}')
+def mostrar_descripcion(id: int):
+    return get_mostrar_descripcion(id)
 
 serve()

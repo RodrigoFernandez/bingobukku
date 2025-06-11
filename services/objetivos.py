@@ -39,3 +39,9 @@ class ObjetivosService(object):
             session.refresh(objetivo)
             return objetivo
     
+    def get_descripcion(self, id: int):
+        """
+        Obtiene una descripción por su ID.
+        """
+        with self.db.get_session() as session:
+            return session.query(Descripcion).filter(Descripcion.id == id).first()

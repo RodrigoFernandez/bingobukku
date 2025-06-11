@@ -5,7 +5,6 @@ from bo.models import Objetivo, Descripcion, Moneda, Usuario
 import toml
 
 config = toml.load('bingobukku.toml')
-print(f"Configuración cargada: {config}")
 
 objetivosService = ObjetivosService(config['database']['url'])
 usuariosService = UsuariosService(config['database']['url'])
@@ -61,7 +60,7 @@ def get_login():
 
 def get_item_objetivo(objetivo):
     return Li(
-                A(objetivo.nombre, href='/abrir-objetivo/' + str(objetivo.id)),
+                A(objetivo.nombre, href=f"/abrir-objetivo/{objetivo.id}"),
             )
 
 def get_indice(usr: Usuario = None):
@@ -102,7 +101,7 @@ def get_agregar_objetivo():
                         Br(),
                         Div(
                             Button('Aceptar', id='aceptar'),
-                            Button('Cancelar', id='cancelar', hx_get='/indice', hx_target='#contenido'),
+                            Button('Cancelar', id='cancelar', type='reset', onclick=f"window.location.href='/indice';"),
                         ),
                         action='/nuevo-objetivo',
                         method='POST'
@@ -119,9 +118,7 @@ def add_nuevo_objetivo(data: dict):
     """
     Agrega un nuevo objetivo a la lista de objetivos.
     """
-    print(data)
-    print(data.get('objetivo', '').strip())
-    print(_usr)
+    
     nuevo_obj = Objetivo(
         id=None,  # El ID se asignará automáticamente
         nombre=data.get('objetivo', '').strip(),
@@ -133,11 +130,11 @@ def add_nuevo_objetivo(data: dict):
     return get_indice(_usr)
 
 def get_titulo_link_descripcion(descripcion):    
-    return " | ".join([descripcion.feria, descripcion.local, descripcion.moneda + descripcion.precio])
+    return " | ".join([descripcion.feria, descripcion.local, f"{descripcion.moneda}{descripcion.precio}"])
 
 def get_item_descripcion(descripcion):
     return Li(
-                A(get_titulo_link_descripcion(descripcion), href='/mostrar-descripcion'),
+                A(get_titulo_link_descripcion(descripcion), href=f"/mostrar-descripcion/{descripcion.id}"),
                 A('X', cls='borrar-descripcion')
             )
     
@@ -146,8 +143,6 @@ def get_abrir_objetivo(id: int):
     contenidos.append(Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'))
 
     objetivo = objetivosService.get_objetivo(id)
-
-    print(objetivo)
     items = [get_item_descripcion(descripcion) for descripcion in objetivo.descripciones]
     ruta_imagen = objetivo.imagen
 
@@ -159,7 +154,7 @@ def get_abrir_objetivo(id: int):
                     ),
                 Container(
                     Div(
-                        Img(src=ruta_imagen, alt='Objetivo', cls='objetivo-img'),
+                        Img(src=ruta_imagen, alt='Imagen Objetivo', cls='objetivo-img'),
                         cls='objetivo-imgs'
                     ),
                     Div(
@@ -168,7 +163,7 @@ def get_abrir_objetivo(id: int):
                         ),
                        cls='descripciones'),
                     Div(
-                        A('Agregar descripcion', href='/agregar-descripcion/' + str(objetivo.id), cls='agregar-descripcion'),
+                        A('Agregar descripcion', href=f"/agregar-descripcion/{objetivo.id}", cls='agregar-descripcion'),
                         cls='agregar-descripcion-section'
                         ),
                 )]
@@ -201,7 +196,7 @@ def get_agregar_descripcion(objetivo_id: int):
                         Br(),
                         Div(
                             Button('Agregar', id='agregar'),
-                            Button('Cancelar', id='cancelar', hx_get='/abrir-objetivo'),
+                            Button('Cancelar', id='cancelar', type='reset', onclick=f"window.location.href='/abrir-objetivo/{objetivo_id}';"),
                             cls='botonera-descripcion'
                         ),
                         action='/nueva-descripcion',
@@ -241,7 +236,24 @@ def add_nueva_descripcion(data: dict):
     objetivo = objetivosService.get_objetivo(objetivo_id)
     if objetivo:
         objetivo.descripciones.append(descripcion)
-        objetivosService.guardar_objetivo(objetivo)
+        objetivosService.save_or_update_objetivo(objetivo)
 
     # Redirigir al objetivo después de agregar la descripción
     return get_abrir_objetivo(objetivo_id)
+
+def get_mostrar_descripcion(id: int):
+    contenidos = get_common_meta()
+    contenidos.append(Link(rel='stylesheet', href='/styles/descripcion.css', type='text/css'))
+
+    descripcion = objetivosService.get_descripcion(id)
+    if not descripcion:
+        return Html("Descripción no encontrada", status=404)
+
+    contenidos = get_common_meta()
+    contenidos.append(Link(rel='stylesheet', href='/styles/descripcion.css', type='text/css'))
+    contenido_body_aux = [Div(f"Esto es una prueba: {descripcion.id}")]
+    contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
+
+    return Html(
+        tuple(contenidos)
+    )

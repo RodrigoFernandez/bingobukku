@@ -32,7 +32,7 @@ class Objetivo(SQLModel, table=True):
     """
     id: int | None = Field(default=None, primary_key=True)
     nombre: str = Field(default='', nullable=False)
-    descripciones: list['Descripcion'] = Relationship(back_populates='objetivo')
+    descripciones: list['Descripcion'] = Relationship(back_populates='objetivo', sa_relationship_kwargs={"lazy": "selectin"})
     imagen: str | None = Field(nullable=True, default=None)
     usuario_id: int = Field(foreign_key='usuario.id', nullable=False)
     usuario: Usuario = Relationship(back_populates='objetivos')
