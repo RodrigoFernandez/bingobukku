@@ -46,7 +46,10 @@ def get_login():
                             action='/indice',
                            method='POST'
                         )
-                    )
+                    ),
+                    Div(
+                        A('[Registrarse]', href='/registro_alta', cls='registro-link'),
+                    ),
                 )
             )
         )
@@ -249,11 +252,51 @@ def get_mostrar_descripcion(id: int):
     if not descripcion:
         return Html("Descripción no encontrada", status=404)
 
-    contenidos = get_common_meta()
-    contenidos.append(Link(rel='stylesheet', href='/styles/descripcion.css', type='text/css'))
     contenido_body_aux = [Div(f"Esto es una prueba: {descripcion.id}")]
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
 
     return Html(
         tuple(contenidos)
     )
+
+def get_registro_alta():
+    contenidos = get_common_meta()
+    contenidos.append(Link(rel='stylesheet', href='/styles/registro.css', type='text/css'))
+
+    contenido_body_aux = [
+        Div("Registro de Usuario"),
+        Form(
+            Input(id='username', type='text', placeholder='Nombre de usuario'),
+            Input(id='email', type='email', placeholder='Correo electrónico'),
+            Input(id='password', type='password', placeholder='Contraseña'),
+            Button('Registrarse', type='submit'),
+            Button('Cancelar', id='cancelar', type='reset', onclick=f"window.location.href='/';"),
+            action='/nuevo-usuario',
+            method='POST'
+        )
+    ]
+    contenidos.append(get_common_head(titulo='Registro de usuario', contenido_body=contenido_body_aux))
+
+    return Html(
+        tuple(contenidos)
+    )
+
+def add_nuevo_usuario(data: dict):
+    """ Agrega un nuevo usuario al sistema.
+    """
+    print(data)
+    usuario = data.get('username', '').strip()
+    email = data.get('email', '').strip()
+    password = data.get('password', '').strip()
+
+    usuario_nuevo = Usuario(
+        id=None,  # El ID se asignará automáticamente
+        nombre=usuario,
+        mail=email,
+        password=password
+    )
+
+    usuario_nuevo = usuariosService.add_usuario(usuario_nuevo)
+    # Redirigir al login después de registrar el usuario
+    print(usuario_nuevo)
+    return get_login()

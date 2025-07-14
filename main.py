@@ -1,5 +1,5 @@
 from fasthtml.common import *
-from views.componentes import get_login, get_indice, get_agregar_objetivo, get_abrir_objetivo, get_agregar_descripcion, add_nuevo_objetivo, add_nueva_descripcion, get_mostrar_descripcion
+from views.componentes import get_login, get_indice, get_agregar_objetivo, get_abrir_objetivo, get_agregar_descripcion, add_nuevo_objetivo, add_nueva_descripcion, get_mostrar_descripcion, get_registro_alta, add_nuevo_usuario
 import toml
 from bo.models import Database
 
@@ -45,5 +45,13 @@ def nueva_descripcion(data: dict):
 @rt('/mostrar-descripcion/{id}')
 def mostrar_descripcion(id: int):
     return get_mostrar_descripcion(id)
+
+@rt('/registro_alta')
+def registro_alta():
+    return get_registro_alta()
+
+@rt('/nuevo-usuario', methods=['POST'])
+def nuevo_usuario(data: dict):
+    return add_nuevo_usuario(data)
 
 serve()
