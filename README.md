@@ -18,10 +18,10 @@ Puntos a ver:
 
 * Agregar validaciones en los formularios de alta
 * Ver cómo mostrar los mensajes al usuario (de error, alerta o exito)
-* Si no hay imagen poner un link de alta (botón con un +, con tooltip de agregar imagen, y quizas con un texto de subtítulo indicando que va una imagen (?))
-* Hacer lógica para subir imagen al servidor, ver cómo se hace esto. Actualizar el objetivo con la ruta en el servidor de la imagen subida.
+* Puse el link de alta de imagen, hay que mejorarlo
+* Ya puedo subir el archivo al servidor, falta ver que la ruta del archivo se pueda visualizar en la página (deberia ver como hacer público el directorio, para estos casos que no serían imágenes estáticas de la página)
 * Mejorar el link de volver (de un objetivo al indice, poner un kunai (?))
-* Mejorar estilos en los formularios
+* Mejorar estilos de todos los formularios
 * Mejorar la estructura de una descripción (cambiar nombres de campos, reordenar campos en el formulario de ingreso)
 * Hacer logica para mostrar todo el detalle (link mostrar-descripcion, que tenga un botón para eliminar, sería la lógica del punto de abajo)
 * Hacer lógica para dar de baja una descripción (la X al final de cada descripción)

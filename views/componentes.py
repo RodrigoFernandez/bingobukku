@@ -3,6 +3,7 @@ from services.objetivos import ObjetivosService
 from services.usuarios import UsuariosService
 from bo.models import Objetivo, Descripcion, Moneda, Usuario
 import toml
+import os
 
 config = toml.load('bingobukku.toml')
 
@@ -147,8 +148,12 @@ def get_abrir_objetivo(id: int):
 
     objetivo = objetivosService.get_objetivo(id)
     items = [get_item_descripcion(descripcion) for descripcion in objetivo.descripciones]
+    
+    contenido_imagen = A('Agregar imagen', href=f"/subir-img-objetivo/{objetivo.id}", cls='agregar-imagen-objetivo')
     ruta_imagen = objetivo.imagen
-
+    if ruta_imagen:
+        contenido_imagen = Img(src=ruta_imagen, alt='Imagen Objetivo', cls='objetivo-img')
+    
     contenido_body_aux = [Header(
                     Div(),
                     Div(objetivo.nombre),
@@ -157,7 +162,7 @@ def get_abrir_objetivo(id: int):
                     ),
                 Container(
                     Div(
-                        Img(src=ruta_imagen, alt='Imagen Objetivo', cls='objetivo-img'),
+                        contenido_imagen,
                         cls='objetivo-imgs'
                     ),
                     Div(
@@ -258,6 +263,57 @@ def get_mostrar_descripcion(id: int):
     return Html(
         tuple(contenidos)
     )
+
+def get_subir_img_objetivo(objetivo_id: int):
+    contenidos = get_common_meta()
+    contenidos.append(Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'))
+    contenido_body_aux = [
+                Section(
+                    Form(
+                        Input(id='objetivo_id', type='text', placeholder='objetivo_id', value=objetivo_id, hidden=True),
+                        Input(id='archivo', type='file', placeholder='Imagen', accept='image/*'),
+                        Br(),
+                        Div(
+                            Button('Aceptar', id='aceptar'),
+                            Button('Cancelar', id='cancelar', type='reset', onclick=f"window.location.href='/indice';"),
+                        ),
+                        action=f'/agregar-imagen-objetivo',
+                        method='POST'
+                    ),
+                    cls='objetivo-form'
+                )]
+    contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
+    
+    return Html(
+        tuple(contenidos)
+    )
+
+async def add_img_objetivo(data: dict):
+    """
+    Agrega una imagen a un objetivo.
+    """
+    print(data.get('objetivo_id'))
+    print(data.get('archivo'))
+
+    objetivo = objetivosService.get_objetivo(data.get('objetivo_id'))
+    if objetivo:
+        imagen = await data.get('archivo').read() if 'archivo' in data else None
+        nombre_imagen = data.get('archivo').filename if 'archivo' in data else None
+        
+        directorio_destino = f'imagenes_objetivo/{data.get('objetivo_id')}'
+        if not os.path.exists(directorio_destino):
+            os.makedirs(directorio_destino)
+
+        ruta_destino = f'{directorio_destino}/{nombre_imagen}'
+        objetivo.imagen = ruta_destino
+
+        with open(ruta_destino, 'wb') as f:
+            f.write(imagen)
+        
+        objetivosService.save_or_update_objetivo(objetivo)
+    
+    # Redirigir al objetivo después de agregar la imagen
+    return get_indice(_usr)
 
 def get_registro_alta():
     contenidos = get_common_meta()
