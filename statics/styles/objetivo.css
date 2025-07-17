@@ -110,3 +110,8 @@
 .objetivo-form > form > div {
     text-align: center;
 }
+
+.volver-icon {
+    width: 2em;
+    height: 2em;
+}

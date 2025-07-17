@@ -157,7 +157,12 @@ def get_abrir_objetivo(id: int):
     contenido_body_aux = [Header(
                     Div(),
                     Div(objetivo.nombre),
-                    Div(A('Volver', href='/indice')),
+                    Div(
+                        A(
+                            Img(src='/img/kunai.svg', alt='Volver', title='Volver', cls='volver-icon'),
+                            href='/indice'
+                          )
+                    ),
                     cls='objetivo-header'
                     ),
                 Container(
