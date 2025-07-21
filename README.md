@@ -19,8 +19,6 @@ Puntos a ver:
 * Agregar validaciones en los formularios de alta
 * Ver cómo mostrar los mensajes al usuario (de error, alerta o exito)
 * Puse el link de alta de imagen, hay que mejorarlo
-* Ya puedo subir el archivo al servidor, falta ver que la ruta del archivo se pueda visualizar en la página (deberia ver como hacer público el directorio, para estos casos que no serían imágenes estáticas de la página)
-* Mejorar el link de volver (de un objetivo al indice, poner un kunai (?))
 * Mejorar estilos de todos los formularios
 * Mejorar la estructura de una descripción (cambiar nombres de campos, reordenar campos en el formulario de ingreso)
 * Hacer logica para mostrar todo el detalle (link mostrar-descripcion, que tenga un botón para eliminar, sería la lógica del punto de abajo)

@@ -2,6 +2,7 @@ from fasthtml.common import *
 from services.objetivos import ObjetivosService
 from services.usuarios import UsuariosService
 from bo.models import Objetivo, Descripcion, Moneda, Usuario
+import constantes
 import toml
 import os
 
@@ -304,8 +305,8 @@ async def add_img_objetivo(data: dict):
     if objetivo:
         imagen = await data.get('archivo').read() if 'archivo' in data else None
         nombre_imagen = data.get('archivo').filename if 'archivo' in data else None
-        
-        directorio_destino = f'imagenes_objetivo/{data.get('objetivo_id')}'
+
+        directorio_destino = f'{constantes.IMG_OBJETIVO_DIR}/{data.get('objetivo_id')}'
         if not os.path.exists(directorio_destino):
             os.makedirs(directorio_destino)
 

@@ -1,18 +1,29 @@
+import os
 from fasthtml.common import *
+from starlette.staticfiles import StaticFiles
+import constantes
 from views.componentes import add_img_objetivo, get_login, get_indice, get_agregar_objetivo, get_abrir_objetivo, get_agregar_descripcion, add_nuevo_objetivo, add_nueva_descripcion, get_mostrar_descripcion, get_registro_alta, add_nuevo_usuario, get_subir_img_objetivo
 import toml
 from bo.models import Database
 
 
+def init_img_objetivo_dir():
+    os.makedirs(constantes.RUTA_IMG_OBJETIVO_DIR, exist_ok=True)
+
 config = toml.load('bingobukku.toml')
 
 db = Database(config['database']['url'])
+
+init_img_objetivo_dir()
 
 app, rt = fast_app(
                 live=True,
                 pico=False,
                 static_path='statics'
             )
+
+# Esto hace que cualquier archivo en static/imagenes_objetivo sea accesible desde /imagenes_objetivo/archivo.jpg
+app.mount(f"/{constantes.IMG_OBJETIVO_DIR}", StaticFiles(directory=constantes.RUTA_IMG_OBJETIVO_DIR), name=constantes.IMG_OBJETIVO_DIR)
 
 @rt('/')
 def get():
