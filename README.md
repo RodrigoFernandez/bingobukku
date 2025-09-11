@@ -8,9 +8,29 @@ Uso de:
 
 ## Para ejecutar el proyecto usar:
 
-```
+```bash
 poetry run python main.py
 ```
+
+## Para acomodar el proyecto cuando lo bajo de nuevo
+
+- Instalar pyenv e instalar la versión 3.12 de python (confirmar la versión en pyproject.toml)
+- Instalar poetry
+- luego indicarle a poetry que debe usar pyenv:
+
+```bash
+poetry env use $(pyenv which python)
+```
+ - luego ejecutar:
+
+ ```bash
+ poetry install
+ ```
+ - luego, para crear la base de datos (ver ubicación en bingobukku.toml), ejecutar:
+
+```bash
+ poetry run python ./bo/models.py
+ ```
 
 ## Pendientes
 
@@ -25,8 +45,7 @@ Puntos a ver:
 * Hacer lógica para dar de baja una descripción (la X al final de cada descripción)
 * Hacer lógica de login
 * Ver como sería el tema de las sesiones en FastHTML
-* En la pantalla de login agregar un link para el alta de un nuevo usuario
-* Pulir página y mejorar lógica del alta de usuarios
+* Pulir página y mejorar lógica del alta de usuarios, y ver si funciona lo que hay
 * Hacer lógica para mostrar info del usuario logueado
 * Mejorar el header para que muestre: Bingo Bukku (en el centro) link_nombre_usuario (para ver sus datos) link_logout (para salir de la aplicación) [o algo asi, (?)] estos 2 links van alineados a la derecha
 * En el indice, agregar link botón X a cada objetivo para poder eliminarlo
@@ -145,4 +164,3 @@ Al permitir la carga de archivos, es importante tener en cuenta las siguientes c
 * **Almacenar los archivos en un directorio seguro**: Asegúrate de que el directorio donde se almacenan los archivos cargados no sea accesible públicamente para evitar la ejecución de archivos maliciosos.
 
 Si necesitas ayuda para implementar estas medidas de seguridad o tienes alguna otra pregunta, no dudes en consultarme. ¡Estoy aquí para ayudarte!
-
