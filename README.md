@@ -45,7 +45,7 @@ Puntos a ver:
 * Hacer lógica para dar de baja una descripción (la X al final de cada descripción)
 * Hacer lógica de login
 * Ver como sería el tema de las sesiones en FastHTML
-* Pulir página y mejorar lógica del alta de usuarios, y ver si funciona lo que hay
+* Mejorar lógica del alta de usuarios para validar los datos de usuario y que no haya repetidos.
 * Hacer lógica para mostrar info del usuario logueado
 * Mejorar el header para que muestre: Bingo Bukku (en el centro) link_nombre_usuario (para ver sus datos) link_logout (para salir de la aplicación) [o algo asi, (?)] estos 2 links van alineados a la derecha
 * En el indice, agregar link botón X a cada objetivo para poder eliminarlo

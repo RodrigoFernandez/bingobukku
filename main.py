@@ -29,6 +29,12 @@ app.mount(f"/{constantes.IMG_OBJETIVO_DIR}", StaticFiles(directory=constantes.RU
 def get():
     return get_login()
 
+@rt('/validar-login', methods=['POST'])
+def validar_login(data: dict):
+    print(data)
+    # acá va la lógica para validar el login que debería estar en UsuariosService
+    return Redirect('/indice')
+
 @rt('/indice')
 def index():
     return get_indice()
@@ -41,7 +47,7 @@ def agregar_objetivo():
 def nuevo_objetivo(data: dict):
     return add_nuevo_objetivo(data)
 
-@rt('/abrir-objetivo/{id}') 
+@rt('/abrir-objetivo/{id}')
 def abrir_objetivo(id: int):
     return get_abrir_objetivo(id)
 

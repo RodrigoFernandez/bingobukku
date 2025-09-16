@@ -31,3 +31,6 @@ class UsuariosService(object):
             session.commit()
             session.refresh(usuario)
             return usuario
+
+    def validar_login(self, username: str, password: str):
+        pass

@@ -34,7 +34,7 @@ def get_common_head(titulo='Bingo Bukku', contenido_body=[]):
 def get_login():
     componentes = get_common_meta()
     componentes.append(Link(rel='stylesheet', href='/styles/login.css', type='text/css'),)
-    
+
     componentes.append(Head(
             Title('Bingo Bukku'),
             Body(
@@ -45,7 +45,7 @@ def get_login():
                             Input(id='usuario', type='text', placeholder='Usuario'),
                             Input(id='pass', type='password', placeholder='Contraseña'),
                             Button('Ingresar', id='ingresar'),
-                            action='/indice',
+                            action='/validar-login',
                            method='POST'
                         )
                     ),
@@ -114,7 +114,7 @@ def get_agregar_objetivo():
                     cls='objetivo-form'
                 )]
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
-    
+
     return Html(
         tuple(contenidos)
     )
@@ -123,18 +123,18 @@ def add_nuevo_objetivo(data: dict):
     """
     Agrega un nuevo objetivo a la lista de objetivos.
     """
-    
+
     nuevo_obj = Objetivo(
         id=None,  # El ID se asignará automáticamente
         nombre=data.get('objetivo', '').strip(),
         usuario_id=_usr.id,
         usuario=_usr)
-    
+
     objetivosService.save_or_update_objetivo(nuevo_obj)
     # Redirigir al índice después de agregar el objetivo
     return get_indice(_usr)
 
-def get_titulo_link_descripcion(descripcion):    
+def get_titulo_link_descripcion(descripcion):
     return " | ".join([descripcion.feria, descripcion.local, f"{descripcion.moneda}{descripcion.precio}"])
 
 def get_item_descripcion(descripcion):
@@ -142,19 +142,19 @@ def get_item_descripcion(descripcion):
                 A(get_titulo_link_descripcion(descripcion), href=f"/mostrar-descripcion/{descripcion.id}"),
                 A('X', cls='borrar-descripcion')
             )
-    
+
 def get_abrir_objetivo(id: int):
     contenidos = get_common_meta()
     contenidos.append(Link(rel='stylesheet', href='/styles/objetivo.css', type='text/css'))
 
     objetivo = objetivosService.get_objetivo(id)
     items = [get_item_descripcion(descripcion) for descripcion in objetivo.descripciones]
-    
+
     contenido_imagen = A('Agregar imagen', href=f"/subir-img-objetivo/{objetivo.id}", cls='agregar-imagen-objetivo')
     ruta_imagen = objetivo.imagen
     if ruta_imagen:
         contenido_imagen = Img(src=ruta_imagen, alt='Imagen Objetivo', cls='objetivo-img')
-    
+
     contenido_body_aux = [Header(
                     Div(),
                     Div(objetivo.nombre),
@@ -218,7 +218,7 @@ def get_agregar_descripcion(objetivo_id: int):
                     ),
                     cls='descripcion-form'
                 )]
-    
+
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
     return Html(
         tuple(contenidos)
@@ -235,7 +235,7 @@ def add_nueva_descripcion(data: dict):
     moneda = data.get('moneda', Moneda.PESOS.name)
     moneda = Moneda.get_value(moneda)
     precio = data.get('precio', '').strip()
-    
+
     #if not objetivo_id or not feria or not local or not precio:
     #    return get_agregar_descripcion()  # Retorna el formulario si faltan datos
 
@@ -246,7 +246,7 @@ def add_nueva_descripcion(data: dict):
         moneda=moneda,
         precio=precio
     )
-    
+
     objetivo = objetivosService.get_objetivo(objetivo_id)
     if objetivo:
         objetivo.descripciones.append(descripcion)
@@ -289,7 +289,7 @@ def get_subir_img_objetivo(objetivo_id: int):
                     cls='objetivo-form'
                 )]
     contenidos.append(get_common_head(titulo='Bingo Bukku', contenido_body=contenido_body_aux))
-    
+
     return Html(
         tuple(contenidos)
     )
@@ -315,9 +315,9 @@ async def add_img_objetivo(data: dict):
 
         with open(ruta_destino, 'wb') as f:
             f.write(imagen)
-        
+
         objetivosService.save_or_update_objetivo(objetivo)
-    
+
     # Redirigir al objetivo después de agregar la imagen
     return get_indice(_usr)
 
@@ -326,15 +326,20 @@ def get_registro_alta():
     contenidos.append(Link(rel='stylesheet', href='/styles/registro.css', type='text/css'))
 
     contenido_body_aux = [
-        Div("Registro de Usuario"),
-        Form(
-            Input(id='username', type='text', placeholder='Nombre de usuario'),
-            Input(id='email', type='email', placeholder='Correo electrónico'),
-            Input(id='password', type='password', placeholder='Contraseña'),
-            Button('Registrarse', type='submit'),
-            Button('Cancelar', id='cancelar', type='reset', onclick=f"window.location.href='/';"),
-            action='/nuevo-usuario',
-            method='POST'
+        Container(
+            Form(
+                Input(id='username', type='text', placeholder='Nombre de usuario'),
+                Input(id='email', type='email', placeholder='Correo electrónico'),
+                Input(id='password', type='password', placeholder='Contraseña'),
+                Div(
+                    Button('Registrarse', type='submit'),
+                    Button('Cancelar', id='cancelar', type='reset', onclick=f"window.location.href='/';"),
+                    cls="botonera-registro"
+                ),
+                action='/nuevo-usuario',
+                method='POST',
+                cls='registro-form'
+            )
         )
     ]
     contenidos.append(get_common_head(titulo='Registro de usuario', contenido_body=contenido_body_aux))
